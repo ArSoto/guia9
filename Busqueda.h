@@ -7,10 +7,10 @@ using  namespace std;
 
 class Busqueda {
 private:
-    int *lista;
-    int  max;
+    int lista[20];
+    int  max = 20;
     char selector;
-    int divisor=19;
+    int divisor = 19;
     int vacio = -1;
     Nodo listaNodo[20];
 
@@ -37,8 +37,7 @@ private:
 
 public:
 
-     Busqueda(int, char);
-     Busqueda(int, char, Nodo[]);
+     Busqueda( char);
     void setLista(int);
     void getBuscar(int);
     void imprimir();

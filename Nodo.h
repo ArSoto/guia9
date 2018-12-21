@@ -4,8 +4,8 @@
 
 typedef struct _Nodo {
 
-    int numero = -2;
-    struct _Nodo *sig = NULL;
+    int numero;
+    struct _Nodo *sig;
 } Nodo;
 
 

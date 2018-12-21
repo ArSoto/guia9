@@ -5,35 +5,26 @@
 #include "Busqueda.h"
 #include <math.h>
 
-Busqueda::Busqueda(int tamanio, char eleccion) {
+Busqueda::Busqueda(char eleccion) {
 
-    max = tamanio;
-    lista = new int [tamanio];
     selector = eleccion;
 
-    for (int i = 0; i <tamanio ; ++i) {
 
-        lista[i] = vacio;
 
+    if(eleccion == 'E') {
+        for (int i = 0; i < max; ++i) {
+            listaNodo[i] = {vacio, NULL};
+
+        }
+
+    } else{
+        for (int i = 0; i <max ; ++i) {
+            lista[i] = vacio;
+
+        }
     }
 
 }
-
-Busqueda::Busqueda(int tamanio, char eleccion, Nodo *nodo) {
-
-    max = tamanio;
-    selector = eleccion;
-
-    for (int i = 0; i < tamanio ; ++i) {
-        Nodo tmp;
-        tmp.numero = vacio;
-        listaNodo[i].numero = vacio;
-
-    }
-
-
-}
-
 
 void Busqueda::setLista(int numero) {
 
@@ -42,10 +33,19 @@ void Busqueda::setLista(int numero) {
     bool band = true;
     Nodo *Q;
 
-    if (lista[posicion] == vacio) {     //la posicion a ocupar esta vacia
+    if (selector == 'E'){
+
+        if(listaNodo[posicion].numero == vacio){
+            listaNodo[posicion] = {numero, NULL};
+            band = false;
+
+        } else{
+            reasignacion = selectorDeReasignacion(numero);
+        }
+
+    }else if (lista[posicion] == vacio) {     //la posicion a ocupar esta vacia
         lista[posicion] = numero;
         band = false;
-
 
     } else {      //colicion en la lista
         reasignacion = selectorDeReasignacion(numero);
@@ -63,8 +63,9 @@ void Busqueda::setLista(int numero) {
 
     if (selector == 'E' && band ){
         Q = &listaNodo[posicion];
+        int cont = reasignacion;
 
-        while(Q != NULL){
+        while(Q != NULL && cont > 0){
 
             if (Q->numero == numero){
                 cout << " El numero ingresado ya se encuentra en la lista "<< endl;
@@ -72,6 +73,7 @@ void Busqueda::setLista(int numero) {
             }
 
             Q = Q->sig;
+            cont--;
         }
 
     }
@@ -85,7 +87,7 @@ void Busqueda::setLista(int numero) {
             cout << "Colision de los numeros:" << listaNodo[posicion].numero << " y " << numero << endl;
             cout << "\t Ubicacion de los numeros colisionados: " << endl;
             cout << "\t \t N° " << listaNodo[posicion].numero << " posicion " << posicion << " en nodo 0 "  << endl;
-            cout << "\t \t N° " << listaNodo[posicion].numero << " posicion " << posicion << " en nodo " << reasignacion << endl;
+            cout << "\t \t N° " << numero << " posicion " << posicion << " en nodo " << reasignacion << endl;
             cout << endl;
 
 
@@ -105,57 +107,46 @@ void Busqueda::setLista(int numero) {
 void Busqueda::getBuscar(int numero) {
 
     int posicion = hash(numero);
-    int reasignacion;
+    int reasignacion = verificadorColisiones(numero);
 
     if (selector != 'E') {
 
         if (lista[posicion] == numero){
             cout << "La posicion del numero es " << posicion << " y no hubo colision en la busqueda " << endl;
 
+        } else if(reasignacion != vacio){
+
+            cout << "La posicion del numero "<< numero << " es " << reasignacion;
+            cout << " colisiono con  el numero " << lista[posicion] << " en posicion " << posicion << endl;
+
         } else{
-            reasignacion = verificadorColisiones(numero);
-            cout << "La posicion del numero"<< numero << "es " << reasignacion;
-            cout << " colision con numero " << lista[posicion] << " en posicion " << posicion << endl;
+            cout << " El numero no se encuentra en la lista " << endl;
 
         }
 
-    } else{
+    } else {
 
         if (listaNodo[posicion].numero == numero){
-            cout << "La posicion del numero es " << posicion << " y no hubo colision en la busqueda " << endl;
+            cout << "La posicion del numero  buscado es " << posicion << " y no hubo colision en la busqueda " << endl;
+
+        } else if (reasignacion != vacio ){
+            cout << "En la busqueda del numero hubo una colision con el numero " << listaNodo[posicion].numero << endl;
+            cout << "\tLa posicion del numero "<< numero << " es " << posicion << " en el nodo " << reasignacion << endl;
+
 
         } else{
-            reasignacion = verificadorColisiones(numero);
-            cout << "La posicion del numero"<< numero << "es " << posicion << "en nodo " << reasignacion ;
-            cout << " colision con numero " << listaNodo[posicion].numero << endl;
-
+            cout << "El numero no se encuentra en la lista "<< endl;
         }
 
-
     }
-
 
 }
 
 
-
-
 int  Busqueda::hash(int numero) {
 
-    int posicion;
-    bool band = true;
+    int posicion = numero % divisor;
 
-    posicion = numero % divisor;
-
-    while (band) {
-        if (posicion >= max) {
-
-            posicion = posicion / 10;
-
-        } else{
-            band = false;
-        }
-    }
 
     return posicion;
 }
@@ -294,9 +285,12 @@ int Busqueda::insertarReasignacionLineal(int numero) {
         }
     }
 
-    if(lista[DX] == vacio && lista[DX] != numero){
+    if(lista[DX] == vacio && lista[DX -1] != numero){
         lista[DX] = numero;
 
+
+    } else{
+        return DX -1;
     }
 
     return DX;
@@ -312,7 +306,7 @@ int Busqueda::busquedaEncadenamiento(int numero) {
 
 
     D = hash(numero);
-    Q = listaNodo[D].sig;
+    Q = &listaNodo[D];
 
     while(Q->numero != vacio  && Q->numero != numero){
         Q = Q->sig;
@@ -332,7 +326,7 @@ int Busqueda::insertarEncadenamiento(int numero){
 
     int D;
     Nodo *Q;
-    int cont = 0;
+    int cont = 1;
 
     D = hash(numero);
 
@@ -344,8 +338,9 @@ int Busqueda::insertarEncadenamiento(int numero){
         Q = Q->sig;
     }
 
-    Q->sig = new Nodo{numero, NULL}; // inserta nodo con el el nuevo valor
-
+    if (Q->numero != numero) {
+        Q->sig = new Nodo{numero, NULL}; // inserta nodo con el el nuevo valor
+    }
     return cont;
 }
 
@@ -464,21 +459,45 @@ int Busqueda::insertarReasignacionDobleHash(int numero) {
 
 void Busqueda::imprimir() {
 
-    for (int i = 0; i < max ; ++i) {
+    if(selector != 'E'){
 
-        if(lista[i] != vacio){
-            cout<<"[" << lista[i] <<"] ";
+        for (int i = 0; i < max ; ++i) {
 
-        } else{
-            cout << "[-] ";
+            if(lista[i] != vacio){
+                cout<<"[" << lista[i] <<"] ";
+
+            } else{
+                cout << "[-] ";
+
+            }
+        }
+        cout << endl;
+
+    } else{
+
+        Nodo *Q;
+        for (int i = 0; i < max ; ++i) {
+
+            if(listaNodo[i].numero != vacio){
+                Q = &listaNodo[i];
+
+                while(Q != NULL){
+                    cout << " [" << Q->numero << "]";
+
+                    if (Q->sig != NULL){
+                        cout << " -> ";
+                    }
+
+                    Q = Q->sig;
+                }
+
+                cout << endl;
+
+            } else{
+                cout << " [-]" << endl;
+            }
 
         }
 
-
     }
-
-    cout << endl;
 }
-
-
-
