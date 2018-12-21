@@ -39,17 +39,48 @@ void Busqueda::setLista(int numero) {
 
     int posicion = hash(numero);
     int reasignacion = -1;
+    bool band = true;
+    Nodo *Q;
 
-    if (lista[posicion] != vacio ){
+    if (lista[posicion] == vacio) {     //la posicion a ocupar esta vacia
+        lista[posicion] = numero;
+        band = false;
+
+
+    } else {      //colicion en la lista
         reasignacion = selectorDeReasignacion(numero);
 
-    } else{
-        lista[posicion] = numero;
     }
 
-    if (reasignacion != -1) {        //si hubo colision en la lista
+    if(band  && selector != 'E' && lista[posicion] == numero && lista[reasignacion] == numero ){
 
-        if (selector == 'E') {
+
+        cout << "El numero ingresado ya se encontrba en la lista " << endl;
+        band = false;
+
+
+    }
+
+    if (selector == 'E' && band ){
+        Q = &listaNodo[posicion];
+
+        while(Q != NULL){
+
+            if (Q->numero == numero){
+                cout << " El numero ingresado ya se encuentra en la lista "<< endl;
+                band = false;
+            }
+
+            Q = Q->sig;
+        }
+
+    }
+
+
+
+    if (band) {        //si hubo colision en la lista
+
+        if (selector == 'E') {      //si estamos trabajando con nodos 
 
             cout << "Colision de los numeros:" << listaNodo[posicion].numero << " y " << numero << endl;
             cout << "\t Ubicacion de los numeros colisionados: " << endl;
@@ -62,8 +93,8 @@ void Busqueda::setLista(int numero) {
 
             cout << "Colision de los numeros: " << lista[posicion] << " y " << lista[reasignacion] << endl;
             cout << "\t Ubicacion de los numeros colisionados: " << endl;
-            cout << "\t \t N° " << lista[posicion]  << "posicion" << posicion << endl;
-            cout << "\t \t N° " << lista[reasignacion]  << "posicion" << reasignacion << endl;
+            cout << "\t \t N° " << lista[posicion]  << " posicion " << posicion << endl;
+            cout << "\t \t N° " << lista[reasignacion]  << " posicion " << reasignacion << endl;
             cout << endl;
 
         }
@@ -188,8 +219,31 @@ int Busqueda::selectorDeReasignacion(int numero) {
 
 }
 
-int Busqueda::verificadorColisiones(int) {
-    return 0;
+int Busqueda::verificadorColisiones(int numero) {
+
+    int posicion;
+
+    switch (selector){
+
+        case 'L':
+            posicion = busquedaReasignacionLineal(numero);
+            break;
+
+        case 'C':
+            posicion = busquedaReasigancionCuadratica(numero);
+            break;
+
+        case 'D':
+            posicion = busquedaReasignacionDobleHash(numero);
+            break;
+
+        case 'E':
+            posicion = busquedaEncadenamiento(numero);
+
+    }
+
+    return posicion;
+
 }
 
 int Busqueda::busquedaReasignacionLineal(int numero) {
@@ -212,7 +266,7 @@ int Busqueda::busquedaReasignacionLineal(int numero) {
     }
 
     if(lista[DX] == vacio || DX == D){
-        return vacio;
+        return -1;
 
     } else{
         return DX;
@@ -226,7 +280,7 @@ int Busqueda::busquedaReasignacionLineal(int numero) {
 int Busqueda::insertarReasignacionLineal(int numero) {
 
     int D;
-    int DX = vacio;
+    int DX;
 
     D = hash(numero);
     DX = D + 1;
@@ -240,11 +294,9 @@ int Busqueda::insertarReasignacionLineal(int numero) {
         }
     }
 
-    if(lista[DX] == vacio){
+    if(lista[DX] == vacio && lista[DX] != numero){
         lista[DX] = numero;
 
-    } else{
-        DX = -1;
     }
 
     return DX;
@@ -292,12 +344,12 @@ int Busqueda::insertarEncadenamiento(int numero){
         Q = Q->sig;
     }
 
-    Q->sig = new Nodo{numero, NULL};
+    Q->sig = new Nodo{numero, NULL}; // inserta nodo con el el nuevo valor
 
     return cont;
 }
 
-int Busqueda::reasigancionCuadratica(int numero) {
+int Busqueda::busquedaReasigancionCuadratica(int numero) {
 
     int  D;
     int DX;
@@ -331,7 +383,7 @@ int Busqueda::reasigancionCuadratica(int numero) {
 
 }
 
-int Busqueda::BusquedaReasignacionDobleHash(int numero) {
+int Busqueda::busquedaReasignacionDobleHash(int numero) {
 
     int D;
     int DX;
@@ -359,9 +411,6 @@ int Busqueda::insertarReasignacionCuadratica(int numero) {
     int I;
 
     D = hash(numero);
-
-
-
     I = 1;
     DX = (D + (I*I));
 
@@ -379,11 +428,9 @@ int Busqueda::insertarReasignacionCuadratica(int numero) {
         }
     }
 
-    if (lista[DX] == vacio){
+    if (lista[DX] == vacio && lista[DX] != numero){
         lista[DX] = numero;
 
-    } else{
-        DX = -1;
     }
 
     return DX;
@@ -404,17 +451,33 @@ int Busqueda::insertarReasignacionDobleHash(int numero) {
         DX = hashSecundario(DX);
     }
 
-    if (lista[DX] == vacio || lista[DX] != numero){
+    if (lista[DX] == vacio && lista[DX] != numero){
         lista[DX] = numero;
 
 
-    } else{
-        DX = -1;
     }
 
     return DX;
 
 
+}
+
+void Busqueda::imprimir() {
+
+    for (int i = 0; i < max ; ++i) {
+
+        if(lista[i] != vacio){
+            cout<<"[" << lista[i] <<"] ";
+
+        } else{
+            cout << "[-] ";
+
+        }
+
+
+    }
+
+    cout << endl;
 }
 
 

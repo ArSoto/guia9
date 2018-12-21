@@ -11,7 +11,7 @@ private:
     int  max;
     char selector;
     int divisor=19;
-    int vacio = -2;
+    int vacio = -1;
     Nodo listaNodo[20];
 
     int hash(int);
@@ -23,10 +23,10 @@ private:
     int busquedaReasignacionLineal(int);
     int insertarReasignacionLineal(int);
 
-    int reasigancionCuadratica(int);
+    int busquedaReasigancionCuadratica(int);
     int insertarReasignacionCuadratica(int);
 
-    int BusquedaReasignacionDobleHash(int);
+    int busquedaReasignacionDobleHash(int);
     int insertarReasignacionDobleHash(int);
 
     int busquedaEncadenamiento(int);
@@ -41,6 +41,7 @@ public:
      Busqueda(int, char, Nodo[]);
     void setLista(int);
     void getBuscar(int);
+    void imprimir();
 
 
 
