@@ -17,30 +17,30 @@ private:
     int hash(int);
     int hashSecundario(int);
 
+    int  selectorDeReasignacion(int);
+    int  verificadorColisiones(int);
+
     int busquedaReasignacionLineal(int);
-    void IngresoReasignacionLineal(int);
+    int insertarReasignacionLineal(int);
+
+    int reasigancionCuadratica(int);
+    int insertarReasignacionCuadratica(int);
+
+    int BusquedaReasignacionDobleHash(int);
+    int insertarReasignacionDobleHash(int);
+
+    int busquedaEncadenamiento(int);
+    int insertarEncadenamiento(int);
 
 
-    void reasigancionCuadratica(int);
-    void insercionReasignacionCuadratica(int);
-
-    void BusquedaReasignacionDobleHash(int);
-    void insertarReasignacionDobleHash(int);
-
-    void encadenamiento(int);
-    void insertarEncadenamiento(int);
-
-    void selectorDeReasignacion(int);
-    void verificadorColisiones(int);
 
 
 public:
 
      Busqueda(int, char);
-     Busqueda(int, char, Nodo*);
+     Busqueda(int, char, Nodo[]);
     void setLista(int);
-    void setLista2(int);
-    int getBuscar(int);
+    void getBuscar(int);
 
 
 

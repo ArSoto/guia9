@@ -8,8 +8,8 @@ int main() {
     int max = 20;
     char eleccion = 'f';
 
-    Nodo nodo;
-    Busqueda busqueda(max, eleccion, &nodo);
+    Nodo *nodo[max];
+    Busqueda busqueda(max, eleccion, *nodo);
 
     srand(time(NULL));
     int tmp;
@@ -22,7 +22,6 @@ int main() {
 
 
     }
-    cout << " as " <<endl;
 
     for (int j = 0; j < max ; ++j) {
         cout << tmpLista[j] << " ";
